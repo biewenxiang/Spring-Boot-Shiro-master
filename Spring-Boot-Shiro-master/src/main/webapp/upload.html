@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>科经委测试页面</title>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<link rel="stylesheet"
+	href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+	function login() {
+		var username = $('#username').val()
+		var password = $('#password').val()
+		$.ajax({
+			type : "POST",
+			url : "http://localhost:8080/login",
+			data : {
+				username : username,
+				password : password
+			},
+			datatype : "json",
+			withCredentials : true,
+			success : function(data) {
+				$('#token').val(data.data)
+			},
+			error : function(data) {
+				alert(data)
+			}
+		});
+	}
+
+	function getToken() {
+		return $('#token').val();
+	}
+
+	function article() {
+		token = getToken()
+		$.ajax({
+			type : "GET",
+			url : "http://localhost:8080/article",
+			data : {},
+			datatype : "json",
+			withCredentials : true,
+			beforeSend : function(request) {
+				request.setRequestHeader("Authorization", token);
+			},
+			success : function(data) {
+				$('#article').val(data.data);
+			},
+			error : function(data) {
+				alert(data.data)
+			}
+		});
+	}
+
+	function require_auth() {
+		token = getToken()
+		$.ajax({
+			type : "GET",
+			url : "http://localhost:8080/require_auth",
+			data : {},
+			datatype : "json",
+			withCredentials : true,
+			beforeSend : function(request) {
+				request.setRequestHeader("Authorization", token);
+			},
+			success : function(data) {
+				$('#require_auth').val(data.data);
+			},
+			error : function(data) {
+				alert(data.data)
+			}
+		});
+	}
+
+	function require_role() {
+		token = getToken()
+		$.ajax({
+			type : "GET",
+			url : "http://localhost:8080/require_role",
+			data : {},
+			datatype : "json",
+			withCredentials : true,
+			beforeSend : function(request) {
+				request.setRequestHeader("Authorization", token);
+			},
+			success : function(data) {
+				$('#require_role').val(data.data);
+			},
+			error : function(data) {
+				alert(data.data)
+			}
+		});
+	}
+
+	function require_permission() {
+		token = getToken()
+		$.ajax({
+			type : "GET",
+			url : "http://localhost:8080/require_permission",
+			data : {},
+			datatype : "json",
+			withCredentials : true,
+			beforeSend : function(request) {
+				request.setRequestHeader("Authorization", token);
+			},
+			success : function(data) {
+				$('#require_permission').val(data.data);
+			},
+			error : function(data) {
+				alert(data.data)
+			}
+		});
+	}
+
+	//method="post" 
+	//action = "http://k8s.datagrand.net:31433/upload/UploadAction"
+</script>
+
+
+
+</head>
+<body>
+	<div>
+		用户名：<input type="text" id='username' /> 密码：<input type="text"
+			id='password' />
+		<button id='button1' onclick='login()'>登入</button>
+		<br /> token
+		身份认证的唯一识别，用户名和密码加密组成的字符串登录成功之后，剩下的访问request.setheader中带着就可以通过身份验证：<input
+			type="text" id='token' disabled="disabled" size="300" /> </br>
+		<button id='button2' onclick='article()'>所有人都可以访问，但是用户与游客看到的内容不同</button>
+		<input type="text" id='article' size="300" /> </br>
+		<button id='button3' onclick='require_auth()'>登入的用户才可以进行访问</button>
+		<input type="text" id='require_auth' size="300" /> </br>
+		<button id='button4' onclick='require_role()'>admin的角色用户才可以登入</button>
+		<input type="text" id='require_role' size="300" /> </br>
+		<button id='button5' onclick='require_permission()'>拥有view和edit权限的用户才可以访问</button>
+		<input type="text" id='require_permission' size="300" />
+	</div>
+</body>
+</html>
